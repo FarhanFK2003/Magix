@@ -1,0 +1,72 @@
+﻿@page "/checkout/{movieId:int}/{quality}/{seatCount:int}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject MagixFinalist.Services.MoviesService movieService
+
+<div class="text-center mt-4">
+    <h1 class="fs-1 text-white"><b>Checkout</b></h1>
+</div>
+<br>
+@if (movie == null)
+{
+    <p>Loading movie details...</p>
+}
+else
+{
+    <div class="checkout-summary">
+        <p><strong>Movie:</strong> @movie.Name</p>
+        <p><strong>Quality:</strong> @selectedQuality</p>
+        <p><strong>Number of Seats:</strong> @seatCount</p>
+        <p><strong>Price per Seat:</strong> $@pricePerSeat</p>
+        <p><strong>Total Price:</strong> $@totalPrice</p>
+
+        <button class="btn btn-success" @onclick="ConfirmBooking">Confirm Booking</button>
+        <button class="btn btn-secondary ms-2" @onclick="GoBack">Back</button>
+    </div>
+}
+
+@code {
+    [Parameter] public int movieId { get; set; }
+    [Parameter] public string quality { get; set; }
+    [Parameter] public int seatCount { get; set; }
+
+    private Movie movie;
+    private string selectedQuality;
+    private decimal pricePerSeat;
+    private decimal totalPrice;
+
+    protected override void OnInitialized()
+    {
+        movie = movieService.GetMovie(movieId);
+        selectedQuality = quality;
+
+        // Calculate price per seat based on quality
+        pricePerSeat = CalculatePricePerSeat(selectedQuality);
+
+        // Calculate total price based on seat count and quality
+        totalPrice = (decimal)(movie.Price * seatCount) + (seatCount * pricePerSeat);
+    }
+
+    private decimal CalculatePricePerSeat(string quality)
+    {
+        return quality switch
+        {
+            "Gold" => 20.0m,
+            "Platinum" => 30.0m,
+            "Silver" => 15.0m,
+            "3D" => 25.0m,
+            "HD" => 18.0m,
+            _ => 10.0m, // Default price if quality is not recognized
+        };
+    }
+
+    private void ConfirmBooking()
+    {
+        navigationManager.NavigateTo("/Confirmation");
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/movies/{movieId}");
+    }
+}

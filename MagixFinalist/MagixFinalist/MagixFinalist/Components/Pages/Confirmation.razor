@@ -1,0 +1,17 @@
+﻿@page "/Confirmation"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+
+<div class="confirmation-page text-center">
+    <h2>Booking Confirmed!</h2>
+    <p>Thank you for your booking. We look forward to seeing you at the movie!</p>
+    <button class="btn btn-primary mt-3" @onclick="GoToHome">Return to Home</button>
+</div>
+
+
+@code {
+    private void GoToHome()
+    {
+        navigationManager.NavigateTo("/movies");
+    }
+}

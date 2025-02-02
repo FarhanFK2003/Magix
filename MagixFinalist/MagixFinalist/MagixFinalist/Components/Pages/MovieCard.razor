@@ -1,0 +1,22 @@
+﻿@page "/moviecard"
+
+@if (Movie != null)
+{
+    <div class="movie-card border p-3 mb-3 rounded shadow-sm d-flex flex-column align-items-center">
+        <div class="movie-card-header text-center">
+            <h3>@Movie.Name</h3>
+        </div>
+        <div class="movie-card-body text-center">
+            <img src="@Movie.ImgPath" alt="Movie Image" class="img-fluid mb-3 movie-image" />
+            <p>@Movie.Description</p>
+            <p>Price: $@Movie.Price</p>
+        </div>
+        <div class="movie-card-footer text-center">
+            <a href="/movies/@Movie.Id" class="btn btn-primary">View Details</a>
+        </div>
+    </div>
+}
+
+@code {
+	[Parameter] public Movie Movie { get; set; }
+}

@@ -1,0 +1,147 @@
+﻿@page "/admin"
+@rendermode InteractiveServer
+@inject MagixFinalist.Services.MoviesService movieService
+@inject MagixFinalist.Services.CustomersService customersService
+@inject NavigationManager navigationManager
+
+<div class="container bg-white p-4 mt-5 rounded shadow-sm">
+    <h1 class="text-center">Admin Panel</h1>
+
+    <div class="row mt-5">
+        <!-- Movies Section -->
+        <div class="col-md-6">
+            <h2>Manage Movies</h2>
+            <button class="btn btn-success mb-3" @onclick="AddMovie">Add Movie</button>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (movies == null || !movies.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No movies available.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var movie in movies)
+                        {
+                            <tr>
+                                <td>@movie.Id</td>
+                                <td>@movie.Name</td>
+                                <td>$@movie.Price</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" @onclick="() => EditMovie(movie.Id)">Edit</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteMovie(movie.Id)">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Customers Section -->
+        <div class="col-md-6">
+            <h2>Manage Customers</h2>
+            <button class="btn btn-success mb-3" @onclick="AddCustomer">Add Customer</button>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (customers == null || !customers.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">No customers available.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var customer in customers)
+                        {
+                            <tr>
+                                <td>@customer.Id</td>
+                                <td>@customer.Email</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" @onclick="() => EditCustomer(customer.Id)">Edit</button>
+                                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteCustomer(customer.Id)">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Movie> movies = new();
+    private List<Customer> customers = new();
+
+    protected override void OnInitialized()
+    {
+        // Fetch movies and customers on page load
+        movies = movieService.GetMovies().ToList();
+        customers = customersService.GetAllCustomers().ToList();
+    }
+
+    // Movies CRUD Operations
+    private void AddMovie()
+    {
+        navigationManager.NavigateTo("/admin/movies/add");
+        RefreshMovies();
+    }
+
+    private void EditMovie(int id)
+    {
+        navigationManager.NavigateTo($"/admin/movies/update/{id}");
+        RefreshMovies();
+    }
+
+    private void DeleteMovie(int id)
+    {
+        movieService.DeleteMovie(id);
+        RefreshMovies();
+    }
+
+    private void RefreshMovies()
+    {
+        movies = movieService.GetMovies().ToList();
+    }
+
+    // Customers CRUD Operations
+    private void AddCustomer()
+    {
+        navigationManager.NavigateTo("/admin/customers/add");
+        RefreshCustomers();
+    }
+
+    private void EditCustomer(int id)
+    {
+        navigationManager.NavigateTo($"/admin/customers/update/{id}");
+        RefreshCustomers();
+    }
+
+    private void DeleteCustomer(int id)
+    {
+        customersService.DeleteCustomer(id);
+        RefreshCustomers();
+    }
+
+    private void RefreshCustomers()
+    {
+        customers = customersService.GetAllCustomers().ToList();
+    }
+}

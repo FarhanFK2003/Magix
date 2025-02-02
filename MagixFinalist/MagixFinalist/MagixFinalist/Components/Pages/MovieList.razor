@@ -1,0 +1,73 @@
+﻿@page "/movies"
+@rendermode InteractiveServer
+@inject MagixFinalist.Services.MoviesService movieService
+
+<div class="text-center mt-4">
+    <h1 class="fs-1 text-white"><b>Now Showing!</b></h1>
+</div>
+<br>
+
+<div class="search-bar text-center mt-3">
+    <input type="text"
+           class="form-control w-50 d-inline"
+           placeholder="Search movies..."
+           @bind="SearchQuery"
+           @bind:event="oninput"
+           style="display: inline-block; margin-right: 10px;" />
+    <button class="btn btn-primary" @onclick="SearchMovies">Search</button>
+</div>
+<br>
+
+<div class="movie-container grid-view">
+    @if (filteredMovies == null || !filteredMovies.Any())
+    {
+        <p>No movies available.</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var movie in filteredMovies)
+            {
+                <div class="col">
+                    <MovieCard Movie="movie" />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<Movie> allMovies = new();
+    private List<Movie> filteredMovies = new();
+    private string SearchQuery = string.Empty;
+
+
+    protected override void OnInitialized()
+    {
+        allMovies = movieService.GetMovies().ToList();
+        filteredMovies = new List<Movie>(allMovies);
+    }
+
+    private void SearchMovies()
+    {
+        if (string.IsNullOrEmpty(SearchQuery))
+        {
+            // If the search query is empty, show all movies
+            filteredMovies = new List<Movie>(allMovies);
+        }
+        else
+        {
+            // Filter movies based on the search query
+            filteredMovies = allMovies
+                .Where(movie => movie.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    // private void DeleteMovie(int id)
+    // {
+    //     movieService.RemoveMovie(id);
+    //     filteredMovies = movieService.GetMovies().ToList(); // Update the list after deletion
+    // }
+
+}

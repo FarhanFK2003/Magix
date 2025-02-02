@@ -1,0 +1,56 @@
+﻿@page "/movies/{id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject MagixFinalist.Services.MoviesService movieService
+
+<div class="text-center mt-4">
+    <h1 class="fs-1 text-white"><b>Movie Details</b></h1>
+</div>
+<br >
+
+@if (movie == null)
+{
+    <p>Loading movie details...</p>
+}
+else
+{
+    <div class="movie-details border p-3 mb-3 rounded shadow-sm">
+        <div class="movie-details-header">
+            <h3>@movie.Name</h3>
+        </div>
+        <div class="movie-details-body">
+            <img src="@movie.ImgPath" alt="Movie Image" class="img-fluid mb-3" style="max-height: 300px;">
+            <p><strong>Description:</strong> @movie.Description</p>
+            <p><strong>Price:</strong> $@movie.Price</p>
+        </div>
+        <div class="movie-details-footer">
+            <button class="btn btn-success" @onclick="BookMovie">Book Now</button>
+            <button class="btn btn-secondary ms-2" @onclick="GoBack">Back</button>
+        </div>
+    </div>
+}
+
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Movie movie;
+
+    protected override void OnInitialized()
+    {
+        // Fetch the movie details based on the ID in the route parameter
+        movie = movieService.GetMovie(id);
+    }
+
+    private void BookMovie()
+    {
+        // Logic for booking the movie could go here.
+        // This might include updating the database or navigating to a booking page.
+        navigationManager.NavigateTo($"/movies/{id}/Bookings");
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo("/movies");
+    }
+}

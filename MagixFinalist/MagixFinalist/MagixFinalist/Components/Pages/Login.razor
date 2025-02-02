@@ -1,0 +1,71 @@
+﻿@page "/Login"
+@rendermode InteractiveServer
+@inject NavigationManager navigation
+@inject MagixFinalist.Services.CustomersService customerService
+@inject IJSRuntime JSRuntime
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="/js/login.js"></script>
+
+<section class="vh-100 bg-image"
+         style="background-image: url('../images/bg.jpg'); background-size: cover; background-position: center;">
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                    <div class="card bg-dark text-light" style="border-radius: 50px; width: 100%; max-width: 35rem; min-height: 35rem;">
+                        <div class="card-body p-5">
+                            <h2 class="text-uppercase text-center mb-3 fs-md-1 fs-sm-2 fs-1 text-center text-white fw-bold" style="text-shadow: 8px 8px 10px rgb(0,0,0);">
+                                <img src="../images/magix.png" alt="" class="img-fluid" style="margin-left: -0.5%; width: 4em;">
+                            </h2>
+                            <img src="../images/u.png" alt="" class="img-fluid mb-4 offset-5">
+
+                            <EditForm Model="customer" OnValidSubmit="loginSubmit">
+                                <div class="form-outline mb-4">
+                                    <label for="Email">Email</label>
+                                    <InputText @bind-Value="customer.Email" type="email" class="form-control form-control-lg emailInput" placeholder="EMAIL" style="border-radius: 20px" required/>
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <label for="Password">Password</label>
+                                    <InputText @bind-Value="customer.Password" type="password" class="form-control form-control-lg" placeholder="Password" style="border-radius: 20px" required />
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-success btn-block btn-lg mt-3 gradient-custom-4 px-4 py-2 fs-md-1 fs-sm-2 fs-1 text-white fw-bold" style="border-radius: 100px; border:none;background-color: #1A0833;">
+                                        Login
+                                    </button>
+                                </div>
+                            </EditForm>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@code {
+    public Customer customer = new Customer();
+
+    public void loginSubmit()
+    {
+        var authenticatedCustomer = customerService.AuthenticateCustomer(customer.Email, customer.Password);
+        if (authenticatedCustomer != null)
+        {
+            // Successful login
+            navigation.NavigateTo("/movies");
+        }
+        else
+        {
+            // Failed login - show alert
+            JSRuntime.InvokeVoidAsync("alert", "Invalid email or password. Please try again.");
+            Console.WriteLine("Invalid email or password. Please try again.");
+        }
+
+    }
+
+
+}

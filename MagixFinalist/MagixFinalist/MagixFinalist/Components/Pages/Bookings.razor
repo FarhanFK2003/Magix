@@ -1,0 +1,89 @@
+﻿@page "/movies/{id:int}/Bookings"
+@rendermode InteractiveServer
+@inject NavigationManager navigationManager
+@inject MagixFinalist.Services.MoviesService movieService
+
+<div class="text-center mt-4">
+    <h1 class="fs-1 text-white"><b>Bookings</b></h1>
+</div>
+<br>
+
+@if (movie == null)
+{
+	<p>Loading booking details...</p>
+}
+else
+{
+    <div class="booking-details border p-3 mb-3 rounded shadow-sm">
+        <div class="booking-details-header">
+            <h3>@movie.Name</h3>
+            <p>@movie.Description</p>
+        </div>
+
+        <div class="booking-options mt-3">
+            <label><strong>Select Quality:</strong></label>
+            <select class="form-select" @bind="selectedQuality">
+                <option value="Gold">Gold</option>
+                <option value="Silver">Silver</option>
+                <option value="Platinum">Platinum</option>
+                <option value="3D">3D</option>
+                <option value="HD">HD</option>
+            </select>
+        </div>
+
+        <div class="seat-selection mt-3">
+            <label><strong>Select Seats:</strong></label>
+            <div>
+                @for (int i = 1; i <= totalSeats; i++)
+                {
+                    var seatNumber = i;
+                    <!-- Local variable for each iteration -->
+                    <input type="checkbox" id="seat-@seatNumber" checked="@selectedSeats.Contains(seatNumber)" @onclick="() => ToggleSeatSelection(seatNumber)" />
+                    <label for="seat-@seatNumber">Seat @seatNumber</label>
+                }
+            </div>
+        </div>
+
+        <div class="checkout mt-4">
+            <button class="btn btn-success" @onclick="ProceedToCheckout">Checkout</button>
+            <button class="btn btn-secondary ms-2" @onclick="GoBack">Back</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Movie movie;
+
+    private string selectedQuality = "Gold"; // Default quality selection
+    private List<int> selectedSeats = new();
+    private int totalSeats = 10; // Example total seat count, adjust as needed
+
+    protected override void OnInitialized()
+    {
+        movie = movieService.GetMovie(id);
+    }
+
+    private void ToggleSeatSelection(int seatNumber)
+    {
+        if (selectedSeats.Contains(seatNumber))
+        {
+            selectedSeats.Remove(seatNumber);
+        }
+        else
+        {
+            selectedSeats.Add(seatNumber);
+        }
+    }
+
+    private void ProceedToCheckout()
+    {
+        var seatCount = selectedSeats.Count();
+        navigationManager.NavigateTo($"/checkout/{movie.Id}/{selectedQuality}/{seatCount}");
+    }
+
+    private void GoBack()
+    {
+        navigationManager.NavigateTo($"/movies/{id}");
+    }
+}

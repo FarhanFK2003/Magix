@@ -1,0 +1,65 @@
+﻿@inherits LayoutComponentBase
+<style>
+    .image-center {
+        z-index: 1;
+        position: relative;
+    }
+</style>
+<body style="background-color: #1A0833;">
+    <div class="container-fluid text-center">
+        <div class="row" style="background-color: #1A0833; display: flex; align-items: center; height: 60px;">
+            <div class="col-2" style="color: white;">
+                <a href="/Home" style="color: white; text-decoration: none;">
+                    <img src="/images/magix.png" alt="" class="img-fluid" style="margin-left: -2%; width: 10em;">
+                </a>
+            </div>
+            <div class="col-2" style="color: white;">
+                <a href="/Home" style="color: white; text-decoration: none;">
+                    Home
+                </a>
+            </div>
+            <div class="col-2" style="color: white;">
+                <a href="/Faq" style="color: white; text-decoration: none;">
+                    FAQ
+                </a>
+            </div>
+
+            <div class="col-3">
+                <a href="/movies" style="color: white; text-decoration: none;">
+                    Movies
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="/Home" class="btn btn-success">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    @Body
+
+    <div class="container-fluid text-center" style="width:100% !important; height:auto;">
+        <div class="row" style="background-color: #1A0833;width:100%; height:auto;">
+            <div class="col-3 align-self-center" style="color: white;">
+                <img src="/images/magix.png" alt="" class="img-fluid" style="margin-left: -2%; width: 10em;">
+                <br>
+                <img src="/images/facebook.png" alt="" class="img-fluid" style="margin-left: 1%; width: 2em;">
+                <img src="/images/instagram.png" alt="" class="img-fluid" style="margin-left: 1%; width: 2em;">
+                <img src="/images/youtube.png" alt="" class="img-fluid" style="margin-left: 1%; width: 2em;">
+                <img src="/images/twitter.png" alt="" class="img-fluid" style="margin-left: 1%; width: 2em;">
+            </div>
+            <div class="col-3 align-self-center" style="color: white;">
+                RESOURCES
+            </div>
+            <div class="col-3 align-self-center" style="color: white;">
+                TERMS
+            </div>
+            <div class="col-3 align-self-center text-wrap" style="color: white;">
+                CONTACT US
+                <br>
+                magix@gmail.com
+                <br>
+                Suite # 32, NY, USA
+            </div>
+        </div>
+    </div>
+</body>
